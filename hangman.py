@@ -13,20 +13,20 @@ def find_indices_of_substr(input_str, search_str):
     return indices
 
 
-word = "chocolate"
+word = "hippopotamus"
 toDisplay=""
 completed=False
 
 length_word = len(word)
 
 for x in range(length_word):
-    toDisplay+="*"
+    toDisplay+="_|"
 
 i = 0
 
 no_of_tries = 8
 
-print ("Hint: Sweet")
+print ("Hint: animal")
 
 while (i < no_of_tries and  not completed ):
     #while (correctAttempt):
@@ -37,9 +37,9 @@ while (i < no_of_tries and  not completed ):
             locs_of_char=find_indices_of_substr(word,input_char[0])
             toDisplay=list(toDisplay)
             for loc in locs_of_char:
-                toDisplay[loc]=input_char[0]
+                    toDisplay[loc*2]=input_char[0]
             toDisplay="".join(toDisplay)
-            if "*" not in toDisplay:
+            if "_" not in toDisplay:
                 completed=True
         elif input_char[0] not in word:
             #correctAttempt = False
@@ -49,6 +49,7 @@ while (i < no_of_tries and  not completed ):
             correctAttempt = True
 
 if completed:
-    print ("You have won the round !! ")
+    print ("\n*** You have won the round !! ")
+    print (toDisplay)
 else:
     print ("You have exhausted all your attempts. Better luck next time ")
