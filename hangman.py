@@ -1,4 +1,9 @@
+import random
+import os
 
+word=''
+hint=''
+words=[]
 
 def find_indices_of_substr(input_str, search_str):
     indices = []
@@ -12,8 +17,37 @@ def find_indices_of_substr(input_str, search_str):
         index = i + 1
     return indices
 
+def init_game():
+    # List all files in a directory using scandir()
+    basepath = 'data/'
+    with os.scandir(basepath) as entries:
+        for entry in entries:
+            if entry.is_file():
+                file1 = open(entry, 'r')
+                temp=file1.readlines()
+                category=entry.name.split(".")[0]
+                for s in temp:
+                    words.append(s.rstrip()+":"+category)
+                #words.extend(file1.readlines()) # This had all the words availble for game
+    return
 
-word = "hippopotamus"
+
+def get_random_word():
+    random_index=random.randrange(0,len(words), 3)
+    random_entry=words[random_index]
+    #print(random_entry)
+    global word
+    global hint
+    word=random_entry.split(":")[0]
+    hint=random_entry.split(":")[1]
+    #print("completed get_random_word",word,"  ",hint)
+    return
+
+
+init_game()
+get_random_word()
+
+
 toDisplay=""
 completed=False
 
@@ -26,18 +60,22 @@ i = 0
 
 no_of_tries = 8
 
-print ("Hint: animal")
+print ("Hint: ",hint)
 
 while (i < no_of_tries and  not completed ):
     #while (correctAttempt):
         print (toDisplay)
-        input_char=input("Guess a character > ")
+        input_char=input("Guess an alphabet > ")
+        if input_char.isspace() or len(input_char)==0:
+            print ("** invalid alphabet entered **")
+            continue
 
-        if input_char[0] in word:
+        if input_char[0] in word and input_char[0] not in toDisplay:
             locs_of_char=find_indices_of_substr(word,input_char[0])
             toDisplay=list(toDisplay)
             for loc in locs_of_char:
-                    toDisplay[loc*2]=input_char[0]
+                toDisplay[loc*2]=input_char[0]
+
             toDisplay="".join(toDisplay)
             if "_" not in toDisplay:
                 completed=True
@@ -45,11 +83,14 @@ while (i < no_of_tries and  not completed ):
             #correctAttempt = False
             i=i+1
             attempts=no_of_tries - i
-            print ("You have ",attempts," attempts left")
+            if attempts > 0:
+                print ("** Incorrect guess ** You have ",attempts," attempts left")
             correctAttempt = True
-
+        elif input_char[0] in toDisplay:
+            print ("** You have already enetered the alphabet. Try another **")
 if completed:
     print ("\n*** You have won the round !! ")
     print (toDisplay)
 else:
-    print ("You have exhausted all your attempts. Better luck next time ")
+    print ("** GAME OVER **. Better luck next time ")
+    print ("The word was ",word)
