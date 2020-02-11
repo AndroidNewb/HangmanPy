@@ -1,9 +1,22 @@
 import random
 import os
+from os import system, name
 
 word=''
 hint=''
 words=[]
+hangman_disp_array=["=============|","             |","            (.)","            /|\\","           / | \\","            / \\","           /   \\"]
+
+
+# define clear function
+def clear():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
+    return
 
 def find_indices_of_substr(input_str, search_str):
     indices = []
@@ -43,6 +56,11 @@ def get_random_word():
     #print("completed get_random_word",word,"  ",hint)
     return
 
+def display_hangman(no_of_failed_attempts):
+    for i in range(no_of_failed_attempts):
+        print(hangman_disp_array[i])
+    return
+
 
 init_game()
 get_random_word()
@@ -58,13 +76,17 @@ for x in range(length_word):
 
 i = 0
 
-no_of_tries = 8
+no_of_tries = 7
 
-print ("Hint: ",hint)
+
 
 while (i < no_of_tries and  not completed ):
     #while (correctAttempt):
-        print (toDisplay)
+        clear()
+        if (i > 0):
+            display_hangman(i)
+        print ("\nHint: ",hint)
+        print ("\n",toDisplay)
         input_char=input("Guess an alphabet > ")
         if input_char.isspace() or len(input_char)==0:
             print ("** invalid alphabet entered **")
@@ -84,6 +106,7 @@ while (i < no_of_tries and  not completed ):
             i=i+1
             attempts=no_of_tries - i
             if attempts > 0:
+                #display_hangman(i)
                 print ("** Incorrect guess ** You have ",attempts," attempts left")
             correctAttempt = True
         elif input_char[0] in toDisplay:
@@ -92,5 +115,7 @@ if completed:
     print ("\n*** You have won the round !! ")
     print (toDisplay)
 else:
+    clear()
+    display_hangman(7)
     print ("** GAME OVER **. Better luck next time ")
     print ("The word was ",word)
